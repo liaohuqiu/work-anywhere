@@ -1,6 +1,9 @@
 #!/bin/bash
 #
 
+current_dir=`pwd`
+root_dir=$(dirname $current_dir)
+
 function exe_cmd()
 {
     echo $1
