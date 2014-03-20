@@ -15,7 +15,7 @@ if [ -z "$branch" ] || [ "$branch" != "master" ]; then
     branch='gh-pages'
 fi
 
-jekyll build
+exe_cmd "jekyll build"
 if [ ! -d '_site' ];then
     echo "not content to be published"
     exit
