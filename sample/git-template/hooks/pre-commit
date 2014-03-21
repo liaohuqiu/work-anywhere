@@ -1,0 +1,18 @@
+#!/bin/sh
+#
+# A git hook to make sure user.email and user.mail in repository  exists before committing
+
+global_email=$(git config --global user.email)
+global_name=$(git config --global user.name)
+
+repository_email=$(git config user.email)
+repository_name=$(git config user.name)
+
+if [ -z "$repository_email" ] || [ -z "$repository_name" ] || [ -n "$global_email" ] || [ -n "$global_name" ]; then
+    # user.email is empty
+    echo "ERROR: [pre-commit hook] Aborting commit because user.email or user.name is missing. Configure them for this repository. Make sure not to configure globally."
+    exit 1
+else  
+    # user.email is not empty
+    exit 0
+fi 

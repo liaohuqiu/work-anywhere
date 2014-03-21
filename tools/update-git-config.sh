@@ -2,15 +2,13 @@
 
 . ../base.sh
 
-templatedir=$HOME/.git/templates
-hooks_dir=$templatedir/hooks
-mkdir -p $hooks_dir
+template_dir=$HOME/.git-templates
+tempalte_hooks_dir=$template_dir/hooks
+exe_cmd "mkdir -p $template_dir"
+exe_cmd "cp -rf $root_dir/sample/git-template/hooks/ $template_dir/"
+exe_cmd "chmod -R a+x $tempalte_hooks_dir"
 
-pre_commit_hook_file=$hooks_dir/pre-commit
-cp -f $root_dir/sample/git-hooks-pre-commit $pre_commit_hook_file
-chmod a+x $pre_commit_hook_file
-
-git config --global init.templatedir $templatedir
+exe_cmd "git config --global init.templatedir $template_dir"
 git config --global alias.st 'status'
 git config --global alias.ci 'commit'
 git config --global alias.sb 'submodule'
