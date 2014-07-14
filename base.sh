@@ -19,7 +19,7 @@ function copy_from_sample()
     if [ ! -f $file_name ]; then 
         exe_cmd "cp -rf $sample_file_name $file_name"
     else
-        local config_content="\n"`cat $sample_file_name`
+        local config_content=`cat $sample_file_name`
         change_line append $file_name "$tag_after_done" "$config_content";
     fi
 }
