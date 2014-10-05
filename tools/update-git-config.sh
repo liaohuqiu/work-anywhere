@@ -9,6 +9,7 @@ exe_cmd "cp -rf $root_dir/sample/git-template/hooks $template_dir/"
 exe_cmd "chmod -R a+x $tempalte_hooks_dir"
 
 exe_cmd "git config --global init.templatedir $template_dir"
+exe_cmd "git config --global core.fileMode false"
 git config --global alias.st 'status'
 git config --global alias.ci 'commit'
 git config --global alias.sb 'submodule'
