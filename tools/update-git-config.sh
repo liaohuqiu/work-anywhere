@@ -15,6 +15,7 @@ git config --global alias.ci 'commit'
 git config --global alias.sb 'submodule'
 git config --global alias.co 'checkout'
 git config --global alias.pm 'push origin master'
+git config --global alias.pd 'push origin dev'
 git config --global alias.lg "log --all --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%ci) %C(bold blue)<%an>%Creset' --abbrev-commit"
 git config --global alias.d difftool
 
