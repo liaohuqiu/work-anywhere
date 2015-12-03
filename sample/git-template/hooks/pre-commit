@@ -8,7 +8,64 @@ global_name=$(git config --global user.name)
 repository_email=$(git config user.email)
 repository_name=$(git config user.name)
 
-if [ -z "$repository_email" ] || [ -z "$repository_name" ] || [ -n "$global_email" ] || [ -n "$global_name" ]; then
+push_url=$(git remote -v | awk '/push/ {print $2}' | head -1)
+
+if [ -n "$push_url" ]; then
+	ret=""
+	echo $push_url | awk -v global_name=$global_name -v global_email=$global_email -v repository_name=$repository_name -v repository_email=$repository_email 'BEGIN {
+		default_name = global_name;
+		default_email = global_email;
+
+		if (length(default_name) == 0) {
+			default_name = "your_default_name";
+		}
+
+		if (length(default_email) == 0) {
+			default_email = "your_default_name@your-default-email.com";
+		}
+
+		name = default_name;
+		email = default_email;
+	}
+
+	$1 ~ /your-company-git-repo-url/ {
+		name = "your_name";
+		email = "your_name@your-company.com";
+	}
+
+	$1 ~ /other-git-url/ {
+		name = "your_name";
+		email = "your_name@other-git.com";
+	}
+
+	END {
+		if (repository_name == name && repository_email == email) {
+			exit 0;
+		}
+
+		if (length(repository_name) == 0 || repository_name != name) {
+			name = (length(name) > 0 ? name : default_name);
+		}
+
+		if (length(repository_email) == 0 || repository_email != email ) {
+			email = (length(email) > 0 ? email : default_email);
+		}
+
+		if (length(name) > 0 && length(email) > 0) {
+			cmd = "git config user.name "name";git config user.email "email";";
+			print "Info : "cmd;
+			system(cmd);
+			exit 1;
+		}
+	}' || ret="1"
+
+	if [ ! -z $ret ]; then
+		echo "Pls retry commit"
+		exit 1
+	fi
+fi
+
+if [ -z "$repository_email" ] || [ -z "$repository_name" ] || [ -z "$global_email" ] || [ -z "$global_name" ]; then
     # user.email is empty
     echo "ERROR: [pre-commit hook] Aborting commit because user.email or user.name is missing. Configure them for this repository. Make sure not to configure globally."
     exit 1
