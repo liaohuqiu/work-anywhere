@@ -1,6 +1,9 @@
 #!/bin/bash
 
-. ../base.sh
+my_dir="$(dirname "$0")"
+my_dir="$(dirname "$my_dir")"
+
+. $my_dir/base.sh
 
 current_dir=`pwd`
 root_dir=$(dirname $current_dir)
