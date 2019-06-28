@@ -4,8 +4,8 @@
 
 set -e
 
-global_email=$(git config --global user.email)
-global_name=$(git config --global user.name)
+global_email=$(git config --global user.email || true)
+global_name=$(git config --global user.name || true)
 
 repository_email=$(git config user.email)
 repository_name=$(git config user.name)
