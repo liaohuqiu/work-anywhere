@@ -7,8 +7,8 @@ set -e
 global_email=$(git config --global user.email || true)
 global_name=$(git config --global user.name || true)
 
-repository_email=$(git config user.email)
-repository_name=$(git config user.name)
+repository_email=$(git config user.email || true)
+repository_name=$(git config user.name || true)
 
 if [ -z "$repository_email" ] || [ -z "$repository_name" ] || [ -n "$global_email" ] || [ -n "$global_name" ]; then
     # user.email is empty
