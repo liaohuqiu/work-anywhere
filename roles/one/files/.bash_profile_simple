@@ -1,0 +1,71 @@
+function _exe_cmd() {
+    echo "$1"
+    eval "$1"
+}
+
+function set_history() {
+    # tag=tag_bash_history
+    # ---------------------
+    # http://stackoverflow.com/questions/9457233/unlimited-bash-history
+    export HISTFILESIZE=
+    export HISTSIZE=10000
+    export HISTTIMEFORMAT="[%F %T] "
+
+    # Change the file location because certain bash sessions truncate .bash_history file upon close.
+    # http://superuser.com/questions/575479/bash-history-truncated-to-500-lines-on-each-login
+
+    export HISTFILE=~/.bash_eternal_history
+    # Force prompt to write history after every command.
+    # http://superuser.com/questions/20900/bash-history-loss
+    PROMPT_COMMAND="history -a; $PROMPT_COMMAND"
+    # Note: every command is written immediately after it's run, so if you accidentally paste a password you cannot just "kill -9 %%" to avoid the history write, you'll need to remove it manually.
+}
+
+function add_ssh_keys() {
+    /usr/bin/ssh-add;
+    # You also can add your other keys here
+}
+
+SSH_ENV="$HOME/.ssh/environment"
+function _start_agent {
+    echo "Initialising new SSH agent..."
+    /usr/bin/ssh-agent | sed 's/^echo/#echo/' > "${SSH_ENV}"
+    echo succeeded
+    chmod 600 "${SSH_ENV}"
+    . "${SSH_ENV}" > /dev/null
+    add_ssh_keys
+}
+
+function start_ssh_agent() {
+    # Source SSH settings, if applicable
+    if [ -f "${SSH_ENV}" ]; then
+        . "${SSH_ENV}" > /dev/null
+        #ps ${SSH_AGENT_PID} doesn't work under cywgin
+        ps -ef | grep ${SSH_AGENT_PID} | grep ssh-agent$ > /dev/null || {
+            _start_agent;
+        }
+    else
+        _start_agent;
+    fi
+}
+
+function set_alias() {
+    alias ll='ls -l'
+    alias ssh='ssh -A'
+    local alias_file=~/.bash_to_alias
+    if [ -f "$alias_file" ]; then
+        source "$alias_file"
+    else
+        echo "File $alias_file does not exist."
+    fi
+}
+
+set_history
+start_ssh_agent
+set_alias
+
+export LC_CTYPE=en_US.UTF-8
+export HOMEBREW_BREW_GIT_REMOTE="https://mirrors.tuna.tsinghua.edu.cn/git/homebrew/brew.git"
+
+# fnm
+eval "$(fnm env --use-on-cd --shell bash)"
